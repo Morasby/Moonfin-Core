@@ -144,6 +144,8 @@ dependencies:
   path_provider_tvos: any
   shared_preferences_tvos: any
   flutter_secure_storage_tvos: any
+  connectivity_plus_tvos: any
+  sqflite_tvos: any
 
 dev_dependencies:
   flutter_test:
