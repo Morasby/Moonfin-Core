@@ -10,7 +10,9 @@ import '../../util/platform_detection.dart';
 
 QueryExecutor openConnection() {
   return LazyDatabase(() async {
-    final docs = await getApplicationDocumentsDirectory();
+    final docs = PlatformDetection.isAppleTV
+        ? await getApplicationCacheDirectory()
+        : await getApplicationDocumentsDirectory();
     final dbDir = Directory('${docs.path}/Moonfin/DB');
     if (!dbDir.existsSync()) {
       await dbDir.create(recursive: true);

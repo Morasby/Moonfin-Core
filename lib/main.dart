@@ -20,6 +20,8 @@ import 'platform/web_runtime_config.dart';
 import 'preference/preference_constants.dart';
 import 'preference/user_preferences.dart';
 import 'util/platform_detection.dart';
+import 'util/tv_image_cache_stub.dart'
+    if (dart.library.io) 'util/tv_image_cache_io.dart';
 
 void _configureImageCache() {
   final imageCache = PaintingBinding.instance.imageCache;
@@ -273,13 +275,16 @@ void main() async {
   ]);
 
   _configureImageCache();
+  await configureAppleTvImageCache();
 
   // On Linux the GTK font pipeline loads fonts asynchronously. The first frame
   // can render before MaterialIcons and other fonts are ready, causing icons to
   // appear blank. Pumping a warm-up frame gives the font loader time to finish.
   // The issue is intermittent and goes away on re-run once the OS font cache
   // is warm, which confirms the timing root cause.
-  if (PlatformDetection.isLinux || PlatformDetection.isTizen) {
+  if (PlatformDetection.isLinux ||
+      PlatformDetection.isTizen ||
+      PlatformDetection.isAppleTV) {
     WidgetsBinding.instance.scheduleWarmUpFrame();
   }
 

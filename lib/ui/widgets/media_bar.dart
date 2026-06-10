@@ -647,7 +647,8 @@ class _MediaBarState extends State<MediaBar>
       _cancelTrailerPreview();
       return;
     }
-    if (!widget.prefs.get(UserPreferences.mediaBarTrailerPreview)) {
+    if (PlatformDetection.isAppleTV ||
+        !widget.prefs.get(UserPreferences.mediaBarTrailerPreview)) {
       return;
     }
     if (!_isHomeRouteActive) {
