@@ -69,6 +69,30 @@ jobs:
           grep -q '^FLUTTER_ROOT=' tvos/Flutter/Generated.xcconfig \
             || echo "FLUTTER_ROOT=$HOME/flutter-tvos" >> tvos/Flutter/Generated.xcconfig
 
+      - name: Stage flutter_assets for the Xcode copy phase
+        run: |
+          DEST="tvos/Flutter/flutter_assets"
+          rm -rf "$DEST"
+          mkdir -p "$DEST"
+          SRC_APP=$(find build/tvos -maxdepth 3 -type d -path "*Release-appletvos/Runner.app/flutter_assets" | head -1)
+          if [ -n "$SRC_APP" ]; then
+            echo "Staging from assembled app bundle: $SRC_APP"
+            rsync -a "$SRC_APP/" "$DEST/"
+          else
+            echo "Staging from build/tvos bundle root"
+            rsync -a \
+              --exclude='*-appletvos' --exclude='*-appletvsimulator' \
+              --exclude='aot' --exclude='.last_build_id' \
+              --exclude='kernel_blob.bin' --exclude='vm_snapshot_data' \
+              --exclude='isolate_snapshot_data' \
+              build/tvos/ "$DEST/"
+          fi
+          test -f "$DEST/fonts/MaterialIcons-Regular.otf" \
+            || { echo "::error::MaterialIcons font missing from staged flutter_assets"; exit 1; }
+          test -f "$DEST/AssetManifest.bin" \
+            || { echo "::error::AssetManifest.bin missing from staged flutter_assets"; exit 1; }
+          echo "Staged flutter_assets:" && ls "$DEST"
+
       - name: Build signed app for device
         run: |
           xcodebuild \
@@ -90,6 +114,8 @@ jobs:
         run: |
           APP="$RUNNER_TEMP/dd/Build/Products/Release-appletvos/Runner.app"
           test -d "$APP"
+          test -f "$APP/flutter_assets/fonts/MaterialIcons-Regular.otf" \
+            || { echo "::error::Built app is missing flutter_assets fonts"; exit 1; }
           rm -rf "$RUNNER_TEMP/Payload" "$RUNNER_TEMP/moonfin.ipa"
           mkdir -p "$RUNNER_TEMP/Payload"
           cp -R "$APP" "$RUNNER_TEMP/Payload/"
