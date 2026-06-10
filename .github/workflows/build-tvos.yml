@@ -16,6 +16,20 @@ jobs:
       - name: Select latest Xcode
         run: sudo xcode-select -s /Applications/Xcode_16.app || true
 
+      - name: Install tvOS platform
+        run: |
+          sudo xcodebuild -runFirstLaunch || true
+          for i in 1 2 3 4 5 6; do
+            if xcodebuild -downloadPlatform tvOS; then
+              echo "tvOS platform installed on attempt $i"
+              exit 0
+            fi
+            echo "downloadPlatform attempt $i failed (known flaky runner bug); retrying in 25s"
+            sleep 25
+          done
+          echo "::error::tvOS platform install failed after 6 attempts"
+          exit 1
+
       - name: Cache flutter-tvos toolchain
         id: cache-fluttertvos
         uses: actions/cache@v4
