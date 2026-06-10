@@ -256,6 +256,25 @@ class _PreferenceWriteFlushObserver with WidgetsBindingObserver {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  if (PlatformDetection.isAppleTV) {
+    ErrorWidget.builder = (FlutterErrorDetails details) {
+      return Directionality(
+        textDirection: TextDirection.ltr,
+        child: Container(
+          color: const Color(0xF2000000),
+          padding: const EdgeInsets.all(28),
+          alignment: Alignment.topLeft,
+          child: SingleChildScrollView(
+            child: Text(
+              '${details.exceptionAsString()}\n\n${details.stack ?? ''}',
+              style: const TextStyle(color: Color(0xFFFF6E6E), fontSize: 15),
+            ),
+          ),
+        ),
+      );
+    };
+  }
+
   if (PlatformDetection.isWeb) {
     await loadWebRuntimeConfig();
   }
