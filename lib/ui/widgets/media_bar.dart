@@ -81,7 +81,8 @@ class _MediaBarState extends State<MediaBar>
   final _backgroundService = GetIt.instance<BackgroundService>();
   final _playbackManager = GetIt.instance<PlaybackManager>();
   final _audioArbiter = GetIt.instance<PlaybackArbiter>();
-  final Media3PlayerBackend? _media3TrailerBackend = PlatformDetection.isTizen
+  final Media3PlayerBackend? _media3TrailerBackend =
+      (PlatformDetection.isTizen || PlatformDetection.isAppleTV)
       ? null
       : GetIt.instance<Media3PlayerBackend>();
   final _sponsorBlockService = SponsorBlockService();
