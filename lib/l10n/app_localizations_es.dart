@@ -2108,10 +2108,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get scrollWheelActionSeek => 'Seek (forward / back)';
 
   @override
-  String get scrollWheelActionVolume => 'Volume';
+  String get scrollWheelActionVolume => 'Volumen';
 
   @override
-  String get playerTooltipVolume => 'Volume';
+  String get playerTooltipVolume => 'Volumen';
 
   @override
   String get fit => 'Ajustar';
