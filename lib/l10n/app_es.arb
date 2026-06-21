@@ -1050,7 +1050,7 @@
       }
     }
   },
-  "endsAt": "Termina en {time}",
+  "endsAt": "Termina a las {time}",
   "@endsAt": {
     "description": "Label showing when media will end",
     "placeholders": {
